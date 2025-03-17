@@ -1,0 +1,14 @@
+# Empêcher le dossier node_modules (très volumineux) d’être committé
+node_modules/
+
+# Fichier d’environnement contenant des informations sensibles (comme les identifiants)
+.env
+
+# Logs et fichiers générés automatiquement par npm
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Empêcher les fichiers de cache et de dépendances inutiles
+.DS_Store
+Thumbs.db
