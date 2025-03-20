@@ -12,3 +12,6 @@ yarn-error.log
 # Empêcher les fichiers de cache et de dépendances inutiles
 .DS_Store
 Thumbs.db
+
+# Empêcher le versionnement des fichiers uploadés par les utilisateurs
+uploads/
