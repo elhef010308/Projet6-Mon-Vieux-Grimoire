@@ -16,3 +16,6 @@ mongoose.connect('mongodb+srv://Elhef03:<XwsPOrTykUGVz>@cluster0.p4na7.mongodb.n
 
 app.use('/api/books', bookRoutes);
 app.use('/api/auth', authRoutes);
+
+// Exportation de app.js
+module.exports = app;
