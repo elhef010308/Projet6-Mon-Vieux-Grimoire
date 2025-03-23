@@ -16,6 +16,46 @@ exports.signup = (req, res, next) => {
         .catch(error => res.status(500).json({ error }))
 };
 
+/* LOGIN va permettre de se connecter en utilisant
+   un email et un mot de passe qui, s'ils sont corrects,
+   vont renvoyer un TOKEN d'authentification */
 exports.login = (req, res, next) => {
+    /* 
+       ETAPE 1 : récupérer l'adresse email envoyée 
+       ETAPE 2 : chercher si un utilisateur existe via cet email 
+       ETAPE 3 : si l'utilisateur est trouové, récupéré le mot de passe associé
+       ETAPE 4 : vérifier si le mot de passe est correct 
+        --> SI NON retourner une erreur
+        --> SI OUI créer le token jxt 
+            - le token jwt doit contenir au minimum l'userId
+            - utiliser le secret JWT (process.env.TOKEN_SECRET) pour signer le token
+            - définir la durée de validité de ce token
+                
+       ETAPE 5 : si tout est ok renvoyer le token au client 
+    */
 
+    User.findOne({ email: req.body.email })
+        .then(user => {
+            if(!user) {
+                return res.status(401).json({ message: 'Identifiants de connection incorrects' });
+            }
+
+            bcrypt.compare(req.body.password, user.password)
+                .then(valide => {
+                    if(!valide) {
+                        return res.status(401).json({ message: 'Identifiants de connection incorrects' });
+                    }
+
+                    res.status(200).json({
+                        userId: user._id,
+                        token: jwt.sign(
+                            { userId: user._id },
+                            process.env.TOKEN_SECRET,
+                            { expiresIn: '24h' }
+                        )
+                    })
+                })
+                .catch(error => res.status(500).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
 };
