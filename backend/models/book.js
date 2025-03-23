@@ -7,8 +7,12 @@ const bookSchema = mongoose.Schema({
     imageUrl: { type: String, required: false },
     price: { type: Number, required: true },
     userId: { type: String, required: true },
-    ratings: {},
-    averageRating: {},
+
+    // Les notes utilisateurs
+    ratings: [{ userId: String, grade: Number }],
+
+    // Note moyenne du livre initialisée à 0 lorsqu'il n'y en as aucune
+    averageRating: { type: Number, default: 0 },
 });
 
-module.export = mongoose.model('Book', bookSchema);
+module.exports = mongoose.model('Book', bookSchema);
