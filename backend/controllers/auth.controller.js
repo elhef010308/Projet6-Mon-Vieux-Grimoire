@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.passeword, 10)
+    bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
                 email: req.body.email,
