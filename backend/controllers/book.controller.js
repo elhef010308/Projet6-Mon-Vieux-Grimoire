@@ -33,7 +33,13 @@ exports.noteBook = (req, res, next) => {
                 return res.status(404).json({ message: 'Livre non trouvé' })
             }
 
-            /* Si le livre est trouvé */
+            /* Vérifier si l'utilisateur a déjà noté le livre */
+            const existingRating = book.ratings.find(rating => rating.userId === req.auth.userId);
+                if(existingRating) {
+                    return res.status(403).json({ message: 'Vous avez déjà noté ce livre' });
+                }
+
+            /* Si ce n'est pas le cas et que le livre est trouvé */
             book.ratings.push({ userId: req.auth.userId, grade: userRating })
 
             /* ETAPE 1 : additionner toutes les notes */
@@ -43,7 +49,7 @@ exports.noteBook = (req, res, next) => {
             });
 
             /* ETAPE 2 : calculer la note moyenne du livre */
-            const moyenne = somme / book.ratings.length;
+            const moyenne = (somme / book.ratings.length).toFixed(2); // arrondir la note moyenne
 
             /* ETAPE 3 : ajouter la moyenne à la donnée 'livre' */
             book.averageRating = moyenne;

@@ -7,13 +7,13 @@ const MIME_TYPES = {
     'image/png': 'png'
 };
 
-const storare = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, 'images')  // où stocker les images
     },
 
-    fileame: (req, file, callback) => {
-        const name = file.originalname.split(' ').joint('_').split('.')[0];
+    filename: (req, file, callback) => {
+        const name = file.originalname.split(' ').join('_').split('.')[0];
         const extension = MIME_TYPES[file.mimetype];
         callback(null, name + Date.now() + '.' + extension);
     }
