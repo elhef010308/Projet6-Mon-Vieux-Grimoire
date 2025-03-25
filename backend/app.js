@@ -13,7 +13,10 @@ const app = express();
 // Connexion à MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+    .catch((err) => {
+        console.log('Connexion à MongoDB échouée !');
+        console.error(err);
+      });
 
 app.use('/api/books', bookRoute);
 app.use('/api/auth', authRoute);
