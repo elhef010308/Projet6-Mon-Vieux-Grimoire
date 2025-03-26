@@ -1,22 +1,44 @@
 const Book = require('../models/book');
+const sharp = require('sharp');
 const fs = require('fs');
 
 //  POST : Créer une donnée livre
-exports.createBook = (req, res, next) => {
-    const bookObject = JSON.parse(req.body.book);
-    delete bookObject._id;          /* L'ID est fournit automatiquement par MongoDB */
-    delete bookObject._userId;      /* userID est déjà définit par l'authentification */
-    const book = new Book({
-        ...bookObject,              /* Utilisation de Spread Operator */
-        userId: req.auth.userId,    /* On récupère l'ID de l'authentification */
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    }); /* URL de l'image = protocole HTTP + nom du domaine + emplacement de l'image + nom du fichier */
+exports.createBook = async (req, res, next) => {
+    try {
+        const bookObject = JSON.parse(req.body.book);
+        delete bookObject._id;          /* L'ID est fournit automatiquement par MongoDB */
+        delete bookObject._userId;      /* userID est déjà définit par l'authentification */
+        
+        const originalPath = req.file.path;    /* L'image d'origine */
+        const fileName = `${Date.now()}.webp`  /* Renommer le format de l'image avant de la convertir */
+        const optimizedPath = path.join('images', fileName);  /* Renommer le fichier image final */
 
-    /* Sauvegarde du livre dans MongoDB avec gestion des erreurs */
-    /* SAVE = méthode Mongoose qui retourne une promesse */
-    book.save()
-        .then(() => res.status(201).json({ message: 'Livre ajouté avec succès' }))
-        .catch(error => res.status(400).json({ error }));
+        // Optimiser l'image avant de l'enregistrer
+        await sharp(originalPath)
+            .resize({ width: 800 })  /* bloquer à 800px de largeur */
+            .webp({ quality: 80 })   /* réduire et convertir l'image */
+            .toFile(optimizedPath)   /* nom du fichier optimisé */
+
+        // Supprimer l'image d'origine (facultatif)
+        fs.unlink(originalPath, (error) => {
+            if(error) {
+                console.error('Erreur lors de la suppression du fichier image :', error);
+            }
+        });
+
+        // Création de la donnée livre avec une image optimisée
+        const book = new Book({
+            ...bookObject,
+            userId: req.auth.userId,
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${fileName}`
+        });
+
+        await book.save()
+        res.status(201).json({ message: 'Livre ajouté avec succès' });
+    } catch {
+        console.error('Erreur lors de la création du livre :', error);
+        res.status(400).json({ error });
+    }
 };
 
 
