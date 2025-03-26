@@ -59,3 +59,29 @@ exports.login = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
+
+
+// ROUTE CRÉÉE UNIQUEMENT POUR EFFECTUER LES TESTS POSTMAN 
+exports.deleteUser = (req, res, next) => {
+    const { email, password } = req.body;
+
+    User.findOne({ email })
+        .then(user => {
+            if(!user) {
+                return res.status(401).json({ message: 'Utilisateur non trouvé' });
+            }
+
+            bcrypt.compare(password, user.password) 
+                .then(valid => {
+                    if (!valid) {
+                        return res.status(401).json({ message: 'Identificants de connexion incorrects' });
+                    }
+
+                    User.deleteOne({ _id: user._id })
+                        .then(() => res.status(200).json({ message: 'Compte utilisateur supprimé' }))
+                        .catch(error => res.status(500).json({ error }));
+                })
+                .catch(error => res.status(500).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
+}:
