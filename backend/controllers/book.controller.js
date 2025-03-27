@@ -1,6 +1,8 @@
 const Book = require('../models/book');
 const sharp = require('sharp'); /* Pour optimiser un fichier image */
 const fs = require('fs');       /* Pour supprimer un fichier image */
+const path = require('path');
+
 
 //  POST : Créer une donnée livre
 exports.createBook = async (req, res, next) => {
@@ -31,6 +33,8 @@ exports.createBook = async (req, res, next) => {
             ...bookObject,
             userId: req.auth.userId,
             imageUrl: `${req.protocol}://${req.get('host')}/images/${fileName}`
+            ratings: [],
+            averageRating: 0
         });
 
         await book.save()
@@ -131,7 +135,8 @@ exports.modifyBook = (req, res, next) => {
     /* REQ.FILE = un fichier image */
     /* Si une nouvelle image est envoyée on exécute la première partie "? { }" */
     /* Si aucune nouvelle image on exécute la seconde ": { }" */
-    const bookObject = req.file ? {
+    const bookObject = req.file 
+    ? {
         ...JSON.parse(req.body.book),  /* Transformer les données JSON en objet JS */
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body }; /* Si aucune nouvelle image on prend simplement toutes les données renvoyées */
