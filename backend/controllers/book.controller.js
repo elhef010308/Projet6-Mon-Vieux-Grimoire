@@ -32,7 +32,7 @@ exports.createBook = async (req, res, next) => {
         const book = new Book({
             ...bookObject,
             userId: req.auth.userId,
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${fileName}`
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${fileName}`,
             ratings: [],
             averageRating: 0
         });
@@ -57,11 +57,6 @@ exports.noteBook = (req, res, next) => {
             /* Si e livre n'est pas trouvé */
             if (!book) {
                 return res.status(404).json({ message: 'Livre non trouvé' })
-            }
-
-            /* Empêcher l'utilisateur de noter son propre livre pour ne pas fausser la moyenne des notes */
-            if (book.userId === req.auth.userId) {
-                return res.status(403).json({ message: 'Vous ne pouvez pas noter votre propre livre' });
             }
 
             /* Vérifier si l'utilisateur a déjà noté le livre */
