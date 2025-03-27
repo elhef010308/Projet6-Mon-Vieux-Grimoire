@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 
+// TOKEN STOCKE DANS LE NAVIGATEUR
 module.exports = (req, res, next) => {
     try{
-        const token = req.headers.authorization.split(' ')[1];             // récupérer le token
-        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);  // décoder le token
+        const token = req.headers.authorization.split(' ')[1];             // récupérer le token 
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);  // décoder le token et le vérifier
         req.auth = { userId: decodedToken.userId };  // ajout de userId dans la requête
         next();
     } catch {

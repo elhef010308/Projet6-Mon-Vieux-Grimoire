@@ -12,12 +12,14 @@ const app = express();
 
 // Connexion à MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch((err) => {
-        console.log('Connexion à MongoDB échouée !');
-        console.error(err);
-      });
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch((err) => {
+    console.log('Connexion à MongoDB échouée !');
+    console.error(err);
+  });
 
+app.use(cors());
+app.use(express.json());   // ligne essentielle pour tester les routes (je crois)
 app.use('/api/books', bookRoute);
 app.use('/api/auth', authRoute);
 

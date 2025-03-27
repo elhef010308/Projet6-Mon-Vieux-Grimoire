@@ -11,9 +11,15 @@ exports.signup = (req, res, next) => {
             });
             user.save()
                 .then(() => res.status(201).json({ message: 'Utilisateur créé' }))
-                .catch(error => res.status(400).json({ error }))
+                .catch(error => {
+                    console.error('Erreur dans .save() :', error);
+                    res.status(400).json({ error });
+                });
         })
-        .catch(error => res.status(500).json({ error }))
+        .catch(error => {
+            console.error('Erreur dans .hash() :', error);
+            res.status(500).json({ error });
+        });
 };
 
 /* LOGIN va permettre de se connecter en utilisant
@@ -36,13 +42,13 @@ exports.login = (req, res, next) => {
 
     User.findOne({ email: req.body.email })
         .then(user => {
-            if(!user) {
+            if (!user) {
                 return res.status(401).json({ message: 'Identifiants de connection incorrects' });
             }
 
             bcrypt.compare(req.body.password, user.password)
                 .then(valide => {
-                    if(!valide) {
+                    if (!valide) {
                         return res.status(401).json({ message: 'Identifiants de connection incorrects' });
                     }
 
@@ -67,11 +73,11 @@ exports.deleteUser = (req, res, next) => {
 
     User.findOne({ email })
         .then(user => {
-            if(!user) {
+            if (!user) {
                 return res.status(401).json({ message: 'Utilisateur non trouvé' });
             }
 
-            bcrypt.compare(password, user.password) 
+            bcrypt.compare(password, user.password)
                 .then(valid => {
                     if (!valid) {
                         return res.status(401).json({ message: 'Identificants de connexion incorrects' });
@@ -84,4 +90,4 @@ exports.deleteUser = (req, res, next) => {
                 .catch(error => res.status(500).json({ error }));
         })
         .catch(error => res.status(500).json({ error }));
-}:
+};
