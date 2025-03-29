@@ -108,20 +108,13 @@ exports.getOneBook = (req, res, next) => {
 
 
 // GET = Renvoyer les données des 3 livres ayant la meilleure note
-exports.bestThreeBook = (req, res, next) => {
-    /* Prendre toutes les livres */
-    Book.find()
-        .then(books => {
-            /* ETAPE 1 : trier les livres selon leur note moyenne */
-            const sortedBooks = books.sort((a, b) => b.averageRating - a.averageRating);
-
-            /* ETAPE 2 : extraire les 3 meilleures moyennes */
-            const threeBestBooks = [sortedBooks[0], sortedBooks[1], sortedBooks[2]];
-
-            /* ETAPE 3 : renvoyer les 3 meilleurs livres au client */
-            res.status(200).json({ bestBooks: threeBestBooks });
-        })
-        .catch(error => res.status(500).json({ error }));
+exports.bestThreeBook = async (req, res, next) => {
+    try {
+        const bestBooks = await Book.find().sort({ averageRating: -1 }).limit(3);
+        res.status(200).json(bestBooks);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
 };
 
 

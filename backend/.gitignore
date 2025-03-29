@@ -16,5 +16,3 @@ Thumbs.db
 # Empêcher le versionnement des fichiers uploadés par les utilisateurs
 uploads/
 
-# Empêcvher le visionnement des fichiers contenant des MDP
-.env
