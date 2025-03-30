@@ -22,24 +22,13 @@ exports.signup = (req, res, next) => {
         });
 };
 
-/* LOGIN va permettre de se connecter en utilisant
-   un email et un mot de passe qui, s'ils sont corrects,
-   vont renvoyer un TOKEN d'authentification */
-exports.login = (req, res, next) => {
-    /* 
-       ETAPE 1 : récupérer l'adresse email envoyée 
-       ETAPE 2 : chercher si un utilisateur existe via cet email 
-       ETAPE 3 : si l'utilisateur est trouové, récupéré le mot de passe associé
-       ETAPE 4 : vérifier si le mot de passe est correct 
-        --> SI NON retourner une erreur
-        --> SI OUI créer le token jxt 
-            - le token jwt doit contenir au minimum l'userId
-            - utiliser le secret JWT (process.env.TOKEN_SECRET) pour signer le token
-            - définir la durée de validité de ce token
-                
-       ETAPE 5 : si tout est ok renvoyer le token au client 
-    */
 
+/* 
+   LOGIN va permettre de se connecter en utilisant un email et un mot de passe qui, 
+   s'ils sont corrects, vont renvoyer un TOKEN d'authentification 
+*/
+
+exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {
             if (!user) {

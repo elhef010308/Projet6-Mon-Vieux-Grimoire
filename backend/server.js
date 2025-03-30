@@ -1,12 +1,7 @@
 const http = require('http');
 const app = require('./app');
 
-/* 
-   Convertir proprement le port d'utilisation (ex: 3000)
-   Si le nombre est valide il est retourné
-   Si ce n'est pas un nombre il est retourné tel quel
-   Sinon on retourne "FALSE" 
-*/
+/* Convertir proprement le port d'utilisation (ex: 5000) */
 const normalizePort = val => {
     const port = parseInt(val, 10);
     if (isNaN(port)) return val;
@@ -14,13 +9,11 @@ const normalizePort = val => {
     return false;
 };
 
-/*
-   Stocker le port dans l'application Express
-   Si une variable environnement PORT existe on l'utilise
-   Sinon on utilise le port 3000 par défaut 
-*/
+/* Stocker le port dans l'application Express : Si une variable environnement PORT existe on l'utilise 
+   sinon on utilise le port 5000 par défaut */
 const port = normalizePort(process.env.PORT || '5000');
 app.set('port', port);
+
 
 // Gestion des erreurs de démarrage du serveur
 const errorHandler = error => {

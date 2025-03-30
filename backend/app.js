@@ -19,12 +19,12 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 app.use(cors());
-app.use(express.json());   // ligne essentielle pour tester les routes (je crois)
+app.use(express.json());
 
-// Permet d’accéder aux fichiers images dans le navigateur
+// Pouvoir accéder aux fichiers images dans le navigateur
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Routes 
+// Les routes 
 app.use('/api/books', bookRoute);
 app.use('/api/auth', authRoute);
 
